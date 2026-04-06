@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-green: #97c93e;
+  --color-brand-orange: #f28b22;
+  --color-sidebar-active: #c2e2a8;
+  --color-bg-light: #f8f9fa;
+  --color-card-border: #eaedf1;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-bg-light);
+  color: #333333;
+}
