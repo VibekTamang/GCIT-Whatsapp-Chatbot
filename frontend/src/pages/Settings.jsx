@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { User, Shield, Plus, Trash2, X } from 'lucide-react';
+import { useNotification } from '../context/NotificationContext';
 
 const Settings = () => {
+  const { addNotification } = useNotification();
   // --- Profile State ---
   const [email, setEmail] = useState('admin.gcit@rub.edu.bt');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -16,7 +18,7 @@ const Settings = () => {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [adminToDelete, setAdminToDelete] = useState(null);
-  const [newAdminForm, setNewAdminForm] = useState({ name: '', email: '', role: 'Moderator' });
+  const [newAdminForm, setNewAdminForm] = useState({ name: '', email: '', role: 'Moderator', password: '' });
 
   // --- Profile Handlers ---
   const handleProfileUpdate = (e) => {
@@ -34,6 +36,15 @@ const Settings = () => {
     } else {
       toast.success("Profile updated successfully!");
     }
+    
+    addNotification({
+      id: Date.now() + Math.random(),
+      title: 'Profile Updated',
+      message: 'Admin profile settings were modified.',
+      type: 'info',
+      date: new Date().toISOString()
+    });
+
     setIsChangingPassword(false);
     setPasswords({ current: '', new: '', confirm: '' });
   };
@@ -48,8 +59,8 @@ const Settings = () => {
   // --- Admins Handlers ---
   const handleAddAdmin = (e) => {
     e.preventDefault();
-    if (!newAdminForm.name || !newAdminForm.email) {
-      toast.error("Please fill required fields");
+    if (!newAdminForm.name || !newAdminForm.email || !newAdminForm.password) {
+      toast.error("Please fill all required fields");
       return;
     }
     const newAdmin = {
@@ -60,8 +71,17 @@ const Settings = () => {
     };
     setAdmins([newAdmin, ...admins]);
     toast.success("Administrator successfully added.");
+
+    addNotification({
+      id: Date.now() + Math.random(),
+      title: 'New Admin Added',
+      message: `${newAdminForm.name} was added as a ${newAdminForm.role}.`,
+      type: 'info',
+      date: new Date().toISOString()
+    });
+
     setIsAdminModalOpen(false);
-    setNewAdminForm({ name: '', email: '', role: 'Moderator' });
+    setNewAdminForm({ name: '', email: '', role: 'Moderator', password: '' });
   };
 
   const confirmDeleteAdmin = (admin) => {
@@ -76,6 +96,15 @@ const Settings = () => {
   const executeDeleteAdmin = () => {
     setAdmins(admins.filter(a => a.id !== adminToDelete.id));
     toast.success("Administrator removed.");
+
+    addNotification({
+      id: Date.now() + Math.random(),
+      title: 'Admin Access Revoked',
+      message: `Access was revoked for ${adminToDelete.name}.`,
+      type: 'warning',
+      date: new Date().toISOString()
+    });
+
     setIsDeleteModalOpen(false);
     setAdminToDelete(null);
   };
@@ -228,6 +257,10 @@ const Settings = () => {
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">Work Email</label>
                 <input type="email" value={newAdminForm.email} onChange={(e) => setNewAdminForm({...newAdminForm, email: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-none focus:border-brand-green hover:border-gray-400" required />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+                <input type="password" value={newAdminForm.password} onChange={(e) => setNewAdminForm({...newAdminForm, password: e.target.value})} className="w-full px-3 py-2 border border-gray-300 rounded text-sm outline-none focus:border-brand-green hover:border-gray-400" required />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1">Permission Role</label>

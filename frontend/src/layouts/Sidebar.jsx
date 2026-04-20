@@ -1,11 +1,20 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, MessageCircleQuestion, FileQuestion, Users, Settings, LogOut } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, MessageCircleQuestion, FileQuestion, Users, Settings, LogOut, Activity } from 'lucide-react';
 import logo from '../assets/logo.png';
+import { useAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    { name: 'System Status', icon: Activity, path: '/system-status' },
     { name: 'FAQs Management', icon: MessageCircleQuestion, path: '/faqs' },
     { name: 'Unanswered Queries', icon: FileQuestion, path: '/unanswered' },
     { name: 'User Activities', icon: Users, path: '/activities' },
@@ -55,7 +64,10 @@ const Sidebar = () => {
             </div>
           </div>
           
-          <button className="w-full flex justify-center items-center gap-2 bg-[#f28b22] hover:bg-[#e07a1b] text-white py-2.5 rounded-md font-medium text-sm transition-colors mt-2">
+          <button 
+            onClick={handleLogout}
+            className="w-full flex justify-center items-center gap-2 bg-[#f28b22] hover:bg-[#e07a1b] text-white py-2.5 rounded-md font-medium text-sm transition-colors mt-2"
+          >
             <LogOut className="w-4 h-4" />
             Logout
           </button>
