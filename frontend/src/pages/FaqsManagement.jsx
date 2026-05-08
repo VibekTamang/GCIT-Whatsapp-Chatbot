@@ -12,8 +12,13 @@ const FaqsManagement = () => {
   const [currentFaq, setCurrentFaq] = useState(null); // null means adding new
   const [faqToDelete, setFaqToDelete] = useState(null);
 
-  // Form State
   const [formData, setFormData] = useState({ question: '', answer: '', category: '' });
+
+  const [filterCategory, setFilterCategory] = useState("All");
+
+  const filteredFaqs = filterCategory === "All" 
+    ? faqs 
+    : faqs.filter(faq => faq.category === filterCategory);
 
   const handleOpenModal = (faq = null) => {
     if (faq) {
@@ -80,13 +85,27 @@ const FaqsManagement = () => {
           <h1 className="text-2xl font-bold text-gray-900 mb-1">FAQs Management</h1>
           <p className="text-gray-500 text-sm">Manage your Knowledge Base and FAQ entries</p>
         </div>
-        <button 
-          onClick={() => handleOpenModal()} 
-          className="bg-brand-green hover:opacity-90 text-white px-5 py-2.5 rounded-md font-medium text-sm flex items-center gap-2 transition-opacity"
-        >
-          <Plus className="w-4 h-4" strokeWidth={3} />
-          Add FAQs
-        </button>
+        <div className="flex gap-3">
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green bg-white shadow-sm"
+          >
+            <option value="All">All Categories</option>
+            <option value="HR">HR</option>
+            <option value="ICT">ICT</option>
+            <option value="Admission">Admission</option>
+            <option value="Student Service">Student Service</option>
+            <option value="General">General</option>
+          </select>
+          <button 
+            onClick={() => handleOpenModal()} 
+            className="bg-brand-green hover:opacity-90 text-white px-5 py-2.5 rounded-md font-medium text-sm flex items-center gap-2 transition-opacity shadow-sm"
+          >
+            <Plus className="w-4 h-4" strokeWidth={3} />
+            Add FAQs
+          </button>
+        </div>
       </div>
 
       {/* Main Table Card */}
@@ -107,7 +126,7 @@ const FaqsManagement = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {faqs.map((faq) => (
+              {filteredFaqs.map((faq) => (
                 <tr key={faq.id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="text-sm font-medium text-gray-900 mb-1">{faq.question}</div>
@@ -134,10 +153,10 @@ const FaqsManagement = () => {
                   </td>
                 </tr>
               ))}
-              {faqs.length === 0 && (
+              {filteredFaqs.length === 0 && (
                 <tr>
                   <td colSpan="5" className="px-6 py-8 text-center text-gray-500">
-                    No FAQs found. Add one to get started.
+                    No FAQs found in this category. Add one to get started.
                   </td>
                 </tr>
               )}
@@ -164,12 +183,20 @@ const FaqsManagement = () => {
                 <label className="block text-sm font-semibold text-gray-800 mb-1.5">Category</label>
                 <input 
                   type="text" 
+                  list="category-options"
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition-all"
-                  placeholder="e.g. Courses, Location, General"
+                  placeholder="e.g. HR, ICT, Admission"
                   required
                 />
+                <datalist id="category-options">
+                  <option value="HR" />
+                  <option value="ICT" />
+                  <option value="Admission" />
+                  <option value="Student Service" />
+                  <option value="General" />
+                </datalist>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-800 mb-1.5">Question</label>
