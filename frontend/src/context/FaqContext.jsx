@@ -5,6 +5,14 @@ const FaqContext = createContext();
 export const useFaqContext = () => useContext(FaqContext);
 
 export const FaqProvider = ({ children }) => {
+  const [categories, setCategories] = useState([
+    { id: 1, name: "HR" },
+    { id: 2, name: "ICT" },
+    { id: 3, name: "Admission" },
+    { id: 4, name: "Student Service" },
+    { id: 5, name: "General" }
+  ]);
+
   const [faqs, setFaqs] = useState([
     { id: 1, question: "How do I apply for leave?", answer: "Leave applications can be submitted through the HR portal.", category: "HR", count: 120, timestamp: "May 1, 2026" },
     { id: 2, question: "What is the policy for remote work?", answer: "Remote work is permitted for eligible roles up to 2 days a week.", category: "HR", count: 85, timestamp: "May 2, 2026" },
@@ -66,6 +74,30 @@ export const FaqProvider = ({ children }) => {
     setFaqs(faqs.filter(f => f.id !== id));
   };
 
+  const addCategory = (categoryName) => {
+    setCategories([...categories, { id: Date.now(), name: categoryName }]);
+  };
+
+  const editCategory = (updatedCategory) => {
+    const oldName = categories.find(c => c.id === updatedCategory.id)?.name;
+    setCategories(categories.map(c => (c.id === updatedCategory.id ? updatedCategory : c)));
+    
+    // Update all FAQs with this category name if it changed
+    if (oldName && oldName !== updatedCategory.name) {
+      setFaqs(faqs.map(f => f.category === oldName ? { ...f, category: updatedCategory.name } : f));
+    }
+  };
+
+  const deleteCategory = (id) => {
+    const categoryToDelete = categories.find(c => c.id === id);
+    if (!categoryToDelete) return;
+
+    setCategories(categories.filter(c => c.id !== id));
+    
+    // Optional: Move FAQs in this category to "General" or some other default
+    setFaqs(faqs.map(f => f.category === categoryToDelete.name ? { ...f, category: "General" } : f));
+  };
+
   const resolveQuery = (queryId, faqData) => {
     addFaq(faqData);
     setUnansweredQueries(unansweredQueries.filter(q => q.id !== queryId));
@@ -75,6 +107,7 @@ export const FaqProvider = ({ children }) => {
   return (
     <FaqContext.Provider value={{
       faqs, addFaq, editFaq, deleteFaq,
+      categories, addCategory, editCategory, deleteCategory,
       unansweredQueries,
       resolveQuery,
       resolvedToday
@@ -83,3 +116,4 @@ export const FaqProvider = ({ children }) => {
     </FaqContext.Provider>
   );
 };
+

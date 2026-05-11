@@ -9,16 +9,22 @@ import Settings from './pages/Settings';
 import Login from './pages/Login';
 import SystemStatus from './pages/SystemStatus';
 import { FaqProvider } from './context/FaqContext';
+import { ContactProvider } from './context/ContactContext';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
+
+import CategoriesManagement from './pages/CategoriesManagement';
+import ContactsManagement from './pages/ContactsManagement';
 
 function App() {
   return (
     <AuthProvider>
       <NotificationProvider>
         <FaqProvider>
-          <BrowserRouter>
+          <ContactProvider>
+            <BrowserRouter>
+
             <Toaster position="top-right" />
             <Routes>
               <Route path="/login" element={<Login />} />
@@ -26,6 +32,8 @@ function App() {
                 <Route element={<DashboardLayout />}>
                   <Route path="/" element={<DashboardOverview />} />
                   <Route path="/faqs" element={<FaqsManagement />} />
+                  <Route path="/categories" element={<CategoriesManagement />} />
+                  <Route path="/contacts" element={<ContactsManagement />} />
                   <Route path="/unanswered" element={<UnansweredQueries />} />
                   <Route path="/activities" element={<UserActivities />} />
                   <Route path="/settings" element={<Settings />} />
@@ -33,11 +41,14 @@ function App() {
                 </Route>
               </Route>
             </Routes>
-          </BrowserRouter>
+            </BrowserRouter>
+          </ContactProvider>
         </FaqProvider>
       </NotificationProvider>
     </AuthProvider>
   );
 }
+
+
 
 export default App;

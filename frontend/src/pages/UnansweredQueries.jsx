@@ -4,7 +4,7 @@ import { AlertCircle, CheckSquare, Plus, X, User } from 'lucide-react';
 import { useFaqContext } from '../context/FaqContext';
 
 const UnansweredQueries = () => {
-  const { unansweredQueries, resolvedToday, resolveQuery } = useFaqContext();
+  const { unansweredQueries, resolvedToday, resolveQuery, categories } = useFaqContext();
   const [activeQuery, setActiveQuery] = useState(null);
   const [formData, setFormData] = useState({ category: '', answer: '' });
 
@@ -143,14 +143,17 @@ const UnansweredQueries = () => {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-800 mb-1.5">Category</label>
-                <input 
-                  type="text" 
+                <select 
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition-all"
-                  placeholder="e.g. Policies, Payments, General"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition-all bg-white"
                   required
-                />
+                >
+                  <option value="" disabled>Select a category</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                  ))}
+                </select>
               </div>
             
               <div>

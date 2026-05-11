@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, MessageCircleQuestion, FileQuestion, Users, Settings, LogOut, Activity } from 'lucide-react';
+import { LayoutDashboard, MessageCircleQuestion, FileQuestion, Users, Settings, LogOut, Activity, FolderTree, UserCircle2 } from 'lucide-react';
 import logo from '../assets/logo.png';
 import { useAuth } from '../context/AuthContext';
 
@@ -16,6 +16,8 @@ const Sidebar = () => {
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'System Status', icon: Activity, path: '/system-status' },
     { name: 'FAQs Management', icon: MessageCircleQuestion, path: '/faqs' },
+    { name: 'Categories Management', icon: FolderTree, path: '/categories' },
+    { name: 'Contacts Management', icon: UserCircle2, path: '/contacts' },
     { name: 'Unanswered Queries', icon: FileQuestion, path: '/unanswered' },
     { name: 'User Activities', icon: Users, path: '/activities' },
     { name: 'Settings', icon: Settings, path: '/settings' },

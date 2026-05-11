@@ -1,0 +1,15 @@
+{
+  "name": "project_dash",
+  "version": "1.0.0",
+  "description": "Dashboard for FAQ Management",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "install-all": "npm install --prefix frontend && pip install -r backend/requirements.txt",
+    "frontend": "npm run dev --prefix frontend",
+    "backend": "cd backend && venv/bin/python -m app.main"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

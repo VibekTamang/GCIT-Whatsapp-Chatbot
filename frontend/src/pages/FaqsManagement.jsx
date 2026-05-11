@@ -4,7 +4,7 @@ import { Pencil, Trash2, Plus, X } from 'lucide-react';
 import { useFaqContext } from '../context/FaqContext';
 
 const FaqsManagement = () => {
-  const { faqs, addFaq, editFaq, deleteFaq } = useFaqContext();
+  const { faqs, addFaq, editFaq, deleteFaq, categories } = useFaqContext();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -92,11 +92,9 @@ const FaqsManagement = () => {
             className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green bg-white shadow-sm"
           >
             <option value="All">All Categories</option>
-            <option value="HR">HR</option>
-            <option value="ICT">ICT</option>
-            <option value="Admission">Admission</option>
-            <option value="Student Service">Student Service</option>
-            <option value="General">General</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.name}>{cat.name}</option>
+            ))}
           </select>
           <button 
             onClick={() => handleOpenModal()} 
@@ -181,23 +179,19 @@ const FaqsManagement = () => {
             <form id="faq-form" onSubmit={handleSave} className="p-6 space-y-5 bg-white">
               <div>
                 <label className="block text-sm font-semibold text-gray-800 mb-1.5">Category</label>
-                <input 
-                  type="text" 
-                  list="category-options"
+                <select 
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition-all"
-                  placeholder="e.g. HR, ICT, Admission"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-brand-green/30 focus:border-brand-green transition-all bg-white"
                   required
-                />
-                <datalist id="category-options">
-                  <option value="HR" />
-                  <option value="ICT" />
-                  <option value="Admission" />
-                  <option value="Student Service" />
-                  <option value="General" />
-                </datalist>
+                >
+                  <option value="" disabled>Select a category</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                  ))}
+                </select>
               </div>
+
               <div>
                 <label className="block text-sm font-semibold text-gray-800 mb-1.5">Question</label>
                 <input 
