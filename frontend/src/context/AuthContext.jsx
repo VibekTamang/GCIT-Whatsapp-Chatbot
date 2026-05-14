@@ -29,8 +29,18 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.removeItem('isAuthenticated');
   };
 
+  const resetPassword = (email) => {
+    // Simulate API call for password reset
+    if (email) {
+      toast.success(`Password reset link sent to ${email}`);
+      return true;
+    }
+    toast.error('Please enter a valid email address.');
+    return false;
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

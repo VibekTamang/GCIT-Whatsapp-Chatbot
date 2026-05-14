@@ -6,11 +6,12 @@ import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
-
   const [email, setEmail] = useState('admin.gcit@rub.edu.bt');
   const [password, setPassword] = useState('............');
   const [showPassword, setShowPassword] = useState(false);
+  const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const { login, isAuthenticated, resetPassword } = useAuth();
 
   useEffect(() => {
     // If user is already authenticated, push them straight to the dashboard
@@ -24,6 +25,15 @@ const Login = () => {
     const success = login(email, password);
     if (success) {
       navigate('/');
+    }
+  };
+
+  const handleResetPassword = (e) => {
+    e.preventDefault();
+    const success = resetPassword(resetEmail);
+    if (success) {
+      setIsForgotModalOpen(false);
+      setResetEmail('');
     }
   };
 
@@ -72,9 +82,13 @@ const Login = () => {
           </div>
 
           <div className="flex justify-end pt-1">
-            <Link to="#" className="text-[#3EA2F5] hover:text-[#2582D0] focus:outline-none transition-colors text-[13px] font-medium">
+            <button 
+              type="button"
+              onClick={() => setIsForgotModalOpen(true)}
+              className="text-[#3EA2F5] hover:text-[#2582D0] focus:outline-none transition-colors text-[13px] font-medium"
+            >
               Forgot password?
-            </Link>
+            </button>
           </div>
 
           <div className="pt-2">
@@ -92,6 +106,57 @@ const Login = () => {
 
         </form>
       </div>
+      {/* Forgot Password Modal */}
+      {isForgotModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="w-full max-w-[400px] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all animate-in fade-in zoom-in duration-200">
+            <div className="p-8">
+              <div className="mb-6 text-center">
+                <div className="w-16 h-16 bg-[#7CB342]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-[#7CB342] flex items-center justify-center">
+                    <span className="text-white font-bold text-xl">?</span>
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Reset Password</h3>
+                <p className="text-sm text-gray-500">
+                  Enter your email address and we'll send you a link to reset your password.
+                </p>
+              </div>
+
+              <form onSubmit={handleResetPassword} className="space-y-5">
+                <div className="space-y-2 text-left">
+                  <label className="text-[13px] font-bold text-gray-600 block">Email Address</label>
+                  <input
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="w-full px-4 py-3 rounded-lg bg-[#F0F2F5] text-gray-800 border-0 focus:ring-2 focus:ring-[#7CB342]/30 transition-all font-medium text-[14px]"
+                    required
+                    autoFocus
+                  />
+                </div>
+
+                <div className="flex flex-col gap-3 pt-2">
+                  <button
+                    type="submit"
+                    className="w-full bg-[#7CB342] hover:bg-[#6CA038] text-white font-bold py-3.5 px-4 rounded-lg transition-transform transform active:scale-[0.99] duration-200 shadow-sm text-[15px]"
+                  >
+                    Send Reset Link
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotModalOpen(false)}
+                    className="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold py-3 px-4 rounded-lg transition-colors text-[14px]"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

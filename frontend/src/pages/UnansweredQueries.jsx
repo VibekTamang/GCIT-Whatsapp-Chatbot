@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { AlertCircle, CheckSquare, Plus, X, User } from 'lucide-react';
+import { AlertCircle, CheckSquare, Plus, X, User, Trash2 } from 'lucide-react';
 import { useFaqContext } from '../context/FaqContext';
 
 const UnansweredQueries = () => {
-  const { unansweredQueries, resolvedToday, resolveQuery, categories } = useFaqContext();
+  const { unansweredQueries, resolvedToday, resolveQuery, deleteUnansweredQuery, categories } = useFaqContext();
   const [activeQuery, setActiveQuery] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [queryToDelete, setQueryToDelete] = useState(null);
   const [formData, setFormData] = useState({ category: '', answer: '' });
 
   const handleOpenModal = (query) => {
@@ -33,6 +35,18 @@ const UnansweredQueries = () => {
 
     toast.success("Response added to FAQs successfully!");
     handleCloseModal();
+  };
+
+  const confirmDelete = (query) => {
+    setQueryToDelete(query);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDelete = () => {
+    deleteUnansweredQuery(queryToDelete.id);
+    toast.success("Query deleted successfully");
+    setIsDeleteModalOpen(false);
+    setQueryToDelete(null);
   };
 
   return (
@@ -101,13 +115,22 @@ const UnansweredQueries = () => {
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">{query.timestamp}</td>
                   <td className="px-6 py-4 text-right align-middle">
-                    <button 
-                      onClick={() => handleOpenModal(query)}
-                      className="inline-flex items-center gap-1.5 bg-brand-green hover:opacity-90 text-white px-3 py-1.5 rounded text-xs font-semibold shadow-sm transition-opacity"
-                    >
-                      <Plus className="w-3.5 h-3.5" strokeWidth={3} />
-                      Add Response
-                    </button>
+                    <div className="flex justify-end gap-3">
+                      <button 
+                        onClick={() => handleOpenModal(query)}
+                        className="inline-flex items-center gap-1.5 bg-brand-green hover:opacity-90 text-white px-3 py-1.5 rounded text-xs font-semibold shadow-sm transition-opacity"
+                      >
+                        <Plus className="w-3.5 h-3.5" strokeWidth={3} />
+                        Add Response
+                      </button>
+                      <button 
+                        onClick={() => confirmDelete(query)}
+                        className="p-1.5 text-red-500 hover:bg-red-50 rounded transition-colors"
+                        title="Delete Query"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -185,6 +208,36 @@ const UnansweredQueries = () => {
               </button>
             </div>
            </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-lg shadow-2xl w-full max-w-sm overflow-hidden transform transition-all border border-gray-200 m-4">
+            <div className="p-6 bg-white text-center">
+              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-100">
+                <Trash2 className="w-8 h-8 text-red-500" strokeWidth={2} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Query</h3>
+              <p className="text-sm text-gray-600 mb-8">
+                Are you sure you want to delete this query? This action cannot be undone.
+              </p>
+              <div className="flex justify-center gap-3 w-full">
+                <button 
+                  onClick={() => setIsDeleteModalOpen(false)}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-900 px-6 py-2.5 rounded-md font-semibold text-sm transition-colors flex-1"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleDelete}
+                  className="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-md font-semibold text-sm transition-colors flex-1"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

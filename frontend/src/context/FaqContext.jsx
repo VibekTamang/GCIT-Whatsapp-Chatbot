@@ -104,12 +104,17 @@ export const FaqProvider = ({ children }) => {
     setResolvedToday(resolvedToday + 1);
   };
 
+  const deleteUnansweredQuery = (id) => {
+    setUnansweredQueries(unansweredQueries.filter(q => q.id !== id));
+  };
+
   return (
     <FaqContext.Provider value={{
       faqs, addFaq, editFaq, deleteFaq,
       categories, addCategory, editCategory, deleteCategory,
       unansweredQueries,
       resolveQuery,
+      deleteUnansweredQuery,
       resolvedToday
     }}>
       {children}
